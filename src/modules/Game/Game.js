@@ -75,9 +75,9 @@ function Game() {
         <div className="tic-tac-toe">
             <GameHeader />
             <h1> TIC TAC TOE </h1>
-            {balance?.isLoaded && (
-                <ButtonNewGame resetGame={resetGame} />
-            )}
+            {/*{balance?.isLoaded && (*/}
+            {/*    <ButtonNewGame resetGame={resetGame} />*/}
+            {/*)}*/}
             <div className="game">
                 {Array.from("012345678").map((ind) => (
                     <Square
