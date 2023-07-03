@@ -1,17 +1,18 @@
-import { motion, AnimatePresence } from "framer-motion";
-import {useContext, useState} from "react";
+import React, { useContext, useState } from "react";
 import Square from "../../components/Square";
-import ButtonNewGame from "../../components/ButtonNewGame";
 import { AssetsContext } from "../../contexts/assets.context";
 import Loader from "../../components/Spinner/Loader";
 import GameHeader from "./Game.header";
+import GameEnd from "./Game.end";
+import JoinGame from "./Game.join";
 
 function Game() {
     const [squares, setSquares] = useState(Array(9).fill(""));
     const [turn, setTurn] = useState("x");
     const [winner, setWinner] = useState(null);
-
     const { balance } = useContext(AssetsContext);
+
+    const [showJoin, setShowJoin] = React.useState(false)
 
     const checkEndTheGame = () => {
         for (let square of squares) {
@@ -75,89 +76,34 @@ function Game() {
         <div className="tic-tac-toe">
             <GameHeader />
             <h1> TIC TAC TOE </h1>
-            {/*{balance?.isLoaded && (*/}
-            {/*    <ButtonNewGame resetGame={resetGame} />*/}
-            {/*)}*/}
-            <div className="game">
-                {Array.from("012345678").map((ind) => (
-                    <Square
-                        key={ind}
-                        ind={ind}
-                        updateSquares={updateSquares}
-                        clsName={squares[ind]}
-                    />
-                ))}
-            </div>
-            <div className={`turn ${turn === "x" ? "left" : "right"}`}>
-                <Square clsName="x" />
-                <Square clsName="o" />
-            </div>
-            <AnimatePresence>
-                {winner && (
-                    <motion.div
-                        key={"parent-box"}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="winner"
-                    >
-                        <motion.div
-                            key={"child-box"}
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            exit={{ scale: 0, opacity: 0 }}
-                            className="text"
-                        >
-                            <motion.h2
-                                initial={{ scale: 0, y: 100 }}
-                                animate={{
-                                    scale: 1,
-                                    y: 0,
-                                    transition: {
-                                        y: { delay: 0.7 },
-                                        duration: 0.7,
-                                    },
-                                }}
-                            >
-                                {winner === "x | o"
-                                    ? "No Winner :/"
-                                    : "Win !! :)"}
-                            </motion.h2>
-                            <motion.div
-                                initial={{ scale: 0 }}
-                                animate={{
-                                    scale: 1,
-                                    transition: {
-                                        delay: 1.3,
-                                        duration: 0.2,
-                                    },
-                                }}
-                                className="win"
-                            >
-                                {winner === "x | o" ? (
-                                    <>
-                                        <Square clsName="x" />
-                                        <Square clsName="o" />
-                                    </>
-                                ) : (
-                                    <>
-                                        <Square clsName={winner} />
-                                    </>
-                                )}
-                            </motion.div>
-                            <motion.div
-                                initial={{ scale: 0 }}
-                                animate={{
-                                    scale: 1,
-                                    transition: { delay: 1.5, duration: 0.3 },
-                                }}
-                            >
-                                <ButtonNewGame resetGame={resetGame} />
-                            </motion.div>
-                        </motion.div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+            {balance?.isLoaded && (
+                <>
+                    <button>
+                        New Game
+                    </button>
+                    <button onClick={() => setShowJoin(true)}>
+                        Join Game
+                    </button>
+                </>
+            )}
+            <>
+                <div className="game">
+                    {Array.from("012345678").map((ind) => (
+                        <Square
+                            key={ind}
+                            ind={ind}
+                            updateSquares={updateSquares}
+                            clsName={squares[ind]}
+                        />
+                    ))}
+                </div>
+                <div className={`turn ${turn === "x" ? "left" : "right"}`}>
+                    <Square clsName="x" />
+                    <Square clsName="o" />
+                </div>
+                <GameEnd resetGame={resetGame} winner={winner} />
+                <JoinGame show={showJoin} onJoinGame={() => {}}/>
+            </>
         </div>
     );
 }

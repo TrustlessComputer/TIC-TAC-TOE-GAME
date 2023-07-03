@@ -140,3 +140,10 @@ body {
     height: 45px;
     border-radius: 4px;
 }
+
+.input-join-game {
+    width: 200px;
+    height: 50px;
+    font-size: 32px;
+    text-align: center;
+}
