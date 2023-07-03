@@ -11,7 +11,7 @@ body {
 
 .tic-tac-toe {
     width: fit-content;
-    margin: 40px auto;
+    margin: 80px auto;
     text-align: center;
 }
 .tic-tac-toe h1 {
@@ -132,4 +132,10 @@ body {
     border-radius: 10px;
     display: flex;
     gap: 15px;
+}
+
+.button {
+    min-width: 150px;
+    height: 45px;
+    border-radius: 4px;
 }

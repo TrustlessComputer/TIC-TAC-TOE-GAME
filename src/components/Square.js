@@ -14,10 +14,10 @@ const Square = ({ ind, updateSquares, clsName }) => {
         >
             {clsName && (
                 <motion.span
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
+                    initial={{scale: 0}}
+                    animate={{scale: 1}}
                     className={clsName}
-                ></motion.span>
+                />
             )}
         </motion.div>
     );
