@@ -1,7 +1,4 @@
 .spinner {
-  height: 100px;
-  width: 100px;
-  margin: 40vh auto auto auto;
   .lds-dual-ring {
     display: inline-block;
     width: 80px;
@@ -26,4 +23,10 @@
       transform: rotate(360deg);
     }
   }
+}
+
+.loader {
+  height: 100px;
+  width: 100px;
+  margin: 40vh auto auto auto;
 }

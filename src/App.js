@@ -1,10 +1,13 @@
 import Game from "./modules/Game/Game";
-import { WalletProvider } from "./contexts/Wallet.context";
+import { WalletProvider } from "./contexts/wallet.context";
+import {AssetsProvider} from "./contexts/assets.context";
 
 const App = () => {
     return (
         <WalletProvider>
-            <Game />
+            <AssetsProvider>
+                <Game />
+            </AssetsProvider>
         </WalletProvider>
     )
 };

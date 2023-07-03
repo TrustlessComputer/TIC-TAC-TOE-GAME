@@ -1,12 +1,17 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import {useContext, useState} from "react";
 import Square from "../../components/Square";
 import ButtonNewGame from "../../components/ButtonNewGame";
+import { AssetsContext } from "../../contexts/assets.context";
+import Loader from "../../components/Spinner/Loader";
+import GameHeader from "./Game.header";
 
 function Game() {
     const [squares, setSquares] = useState(Array(9).fill(""));
     const [turn, setTurn] = useState("x");
     const [winner, setWinner] = useState(null);
+
+    const { balance } = useContext(AssetsContext);
 
     const checkEndTheGame = () => {
         for (let square of squares) {
@@ -62,10 +67,17 @@ function Game() {
         setWinner(null);
     };
 
+    if (!balance?.isLoaded) {
+        return <Loader />
+    }
+
     return (
         <div className="tic-tac-toe">
-            <h1> TIC-TAC-TOE </h1>
-            <ButtonNewGame resetGame={resetGame} />
+            <GameHeader />
+            <h1> TIC TAC TOE </h1>
+            {balance?.isLoaded && (
+                <ButtonNewGame resetGame={resetGame} />
+            )}
             <div className="game">
                 {Array.from("012345678").map((ind) => (
                     <Square
