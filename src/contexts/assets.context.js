@@ -24,8 +24,6 @@ export const AssetsProvider = ({ children }) => {
         ...INITIAL_BALANCE
     });
 
-    console.log('SANG TEST: ', balance)
-
     const onLoadBalance = async () => {
         try {
             const balance = await provider.getBalance(address);

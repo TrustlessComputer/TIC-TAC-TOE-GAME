@@ -5,12 +5,17 @@ import Loader from "../../components/Spinner/Loader";
 import GameHeader from "./Game.header";
 import GameEnd from "./Game.end";
 import JoinGame from "./Game.join";
+import './styles.scss'
+import Spinner from "../../components/Spinner/Spinner";
 
 function Game() {
     const [squares, setSquares] = useState(Array(9).fill(""));
     const [turn, setTurn] = useState("x");
     const [winner, setWinner] = useState(null);
     const { balance } = useContext(AssetsContext);
+
+
+    console.log('SANG TEST: ', squares)
 
     const [showJoin, setShowJoin] = React.useState(false)
 
@@ -73,7 +78,7 @@ function Game() {
     }
 
     return (
-        <div className="tic-tac-toe">
+        <div className="tic-tac-toe game-container">
             <GameHeader />
             <h1> TIC TAC TOE </h1>
             {balance?.isLoaded && (
@@ -86,7 +91,11 @@ function Game() {
                     </button>
                 </>
             )}
+
             <>
+                <div className="wrap-loader">
+                    <Spinner />
+                </div>
                 <div className="game">
                     {Array.from("012345678").map((ind) => (
                         <Square
