@@ -32,7 +32,7 @@ const GameEnd = ({ winner, resetGame, myRole }) => {
                             }}
                         >
                             {winner === "3"
-                                ? "No Winner :/" : winner === myRole ? "Win !! :)" : "Loser !! :("}
+                                ? "No Winner :/" : winner === myRole ? "Win !! :)" : "Lose !! :("}
                         </motion.h2>
                         <motion.div
                             initial={{ scale: 0 }}

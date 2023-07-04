@@ -66,9 +66,20 @@ const useGetGames = () => {
         }
     }
 
+    const onGetWinner = async ({ gameID }) => {
+        try {
+            const _games = await contractSigner.games(gameID);
+            const mapper = gamesBuilder(_games);
+            return mapper.winner
+        } catch (error) {
+            console.log('LOGGER--- GET GAMES ERROR: ', error)
+        }
+    }
+
     return {
         onWaitingGames,
-        onWaitingUpdateNextMove
+        onWaitingUpdateNextMove,
+        onGetWinner
     }
 }
 

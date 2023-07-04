@@ -11,14 +11,15 @@ import CreateGame from "./Game.create";
 import { WalletContext } from "../../contexts/wallet.context";
 import useMakeMoves from "../../hooks/useMakeMoves";
 import useGetGameState from "../../hooks/useGetGameState";
-import throttle from "lodash/throttle";
+import useGetGames from "../../hooks/useGetGames";
 
 let interval = undefined;
 
 function Game() {
     const { balance } = useContext(AssetsContext);
     const { keySet } = useContext(WalletContext);
-    const { onMakeMoves } = useMakeMoves()
+    const { onMakeMoves } = useMakeMoves();
+    const { onGetWinner } = useGetGames()
     const [squares, setSquares] = useState(Array(9).fill(""));
     const [turn, setTurn] = useState("x");
     const [loading, setLoading] = React.useState(false)
@@ -37,52 +38,25 @@ function Game() {
 
     const _onGetGameState = async (gameID) => {
         try {
-            const { squares, newTurn } = await onGetGameState(gameID);
+            const [
+                { squares, newTurn },
+                winner
+            ] = await Promise.all([
+                await onGetGameState(gameID),
+                onGetWinner({ gameID })
+            ]);
             setSquares(squares);
             setTurn(newTurn)
+            setGameInfo(value => ({
+                ...value,
+                winner: winner
+            }))
         } catch (error) {
             alert(error.message || "GET GAME STATE ERROR: ")
         }
     }
 
-    const throttleGetGameState = React.useCallback(throttle(_onGetGameState, 200), [])
-    const checkEndTheGame = () => {
-        for (let square of squares) {
-            if (!square) return false;
-        }
-        return true;
-    };
-    //
-    // const checkWinner = () => {
-    //     const combos = [
-    //         [0, 1, 2],
-    //         [3, 4, 5],
-    //         [6, 7, 8],
-    //         [0, 3, 6],
-    //         [1, 4, 7],
-    //         [2, 5, 8],
-    //         [0, 4, 8],
-    //         [2, 4, 6],
-    //     ];
-    //
-    //     for (let combo of combos) {
-    //         const [a, b, c] = combo;
-    //         if (
-    //             squares[a] &&
-    //             squares[a] === squares[b] &&
-    //             squares[a] === squares[c]
-    //         ) {
-    //             return squares[a];
-    //         }
-    //     }
-    //     return null;
-    // };
-
-
-    const gameStatus = React.useMemo(() => {
-        const isGameEnd = checkEndTheGame();
-
-    }, [squares])
+    const throttleGetGameState = React.useCallback(_onGetGameState, [])
 
     const updateSquares = async (ind) => {
         if (loading) {
@@ -97,9 +71,6 @@ function Game() {
             alert("Please waiting to your role")
             return;
         }
-        // if (squares[ind] || winner) {
-        //     return;
-        // }
         try {
             setLoading(true)
             const { games } = await onMakeMoves({ gameID: gameInfo.gameID, moveIdx: ind, roleNumber: gameInfo.ruleNumber });
@@ -115,16 +86,6 @@ function Game() {
         } finally {
             setLoading(false)
         }
-        // const s = squares;
-        // s[ind] = turn;
-        // setSquares(s);
-        // setTurn(turn === "x" ? "o" : "x");
-        // const W = checkWinner();
-        // if (W) {
-        //     setWinner(W);
-        // } else if (checkEndTheGame()) {
-        //     setWinner("x | o");
-        // }
     };
 
     const resetGame = () => {
