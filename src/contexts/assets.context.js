@@ -31,8 +31,7 @@ export const AssetsProvider = ({ children }) => {
         try {
             const balance = await provider.getBalance(keySet?.address);
             setBalance({
-                // amount: balance.toString(),
-                amount: '0',
+                amount: balance.toString(),
                 isLoaded: true
             })
         } catch (e) {
