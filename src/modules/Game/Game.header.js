@@ -5,13 +5,13 @@ import { AssetsContext } from "../../contexts/assets.context";
 import * as formatter from 'tc-formatter';
 
 const GameHeader = () => {
-    const { address } = useContext(WalletContext);
+    const { keySet } = useContext(WalletContext);
     const { balance } = useContext(AssetsContext);
 
     return (
         <div className="header">
             <div className="item-wrapper">
-                <p>Account: {address}</p>
+                <p>Account: {keySet?.address}</p>
             </div>
             <div className="item-wrapper">
                 <p>Balance: {formatter.formatAmount({

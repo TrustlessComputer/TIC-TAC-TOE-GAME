@@ -17,7 +17,7 @@ const initialValue = {
 export const AssetsContext = React.createContext(initialValue);
 
 export const AssetsProvider = ({ children }) => {
-    const { address } = useContext(WalletContext);
+    const { keySet } = useContext(WalletContext);
     const provider = useProvider();
 
     const [balance, setBalance] = React.useState({
@@ -26,7 +26,7 @@ export const AssetsProvider = ({ children }) => {
 
     const onLoadBalance = async () => {
         try {
-            const balance = await provider.getBalance(address);
+            const balance = await provider.getBalance(keySet?.address);
             setBalance({
                 amount: balance.toString(),
                 isLoaded: true
@@ -39,7 +39,7 @@ export const AssetsProvider = ({ children }) => {
         }
     };
 
-    const debounceLoadBalance = React.useCallback(onLoadBalance, []);
+    const debounceLoadBalance = React.useCallback(debounce(onLoadBalance, 1000), []);
 
     const contextValues = React.useMemo(() => {
         return {

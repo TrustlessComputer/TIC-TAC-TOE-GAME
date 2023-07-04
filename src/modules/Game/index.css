@@ -109,8 +109,8 @@ body {
 .winner .text {
     background: #111;
     width: 70%;
-    max-width: 400px;
-    height: 300px;
+    max-width: 450px;
+    height: 400px;
     border: 2px solid #eee;
     border-radius: 10px;
     display: flex;

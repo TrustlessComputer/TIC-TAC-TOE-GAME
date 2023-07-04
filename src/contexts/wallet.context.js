@@ -4,18 +4,23 @@ import CreateWallet from "../modules/CreateWallet/CreateWallet";
 import { ethers } from "ethers";
 import Loader from "../components/Spinner/Loader";
 
+const INIT_KEY_SET = {
+    prvKey: undefined,
+    address: undefined
+}
+
 const initialValue = {
-    privateKey: undefined,
-    address: undefined,
+    keySet: {
+        ...INIT_KEY_SET
+    }
 };
 
 export const WalletContext = React.createContext(initialValue);
 
 export const WalletProvider = ({ children }) => {
     const [initing, setIniting] = React.useState(true);
-    const [privateKey, setPrivateKey] = React.useState(undefined);
-    const [address, setAddress] = React.useState(undefined);
     const [isCreate, setIsCreate] = React.useState(false);
+    const [keySet, setKeySet] = React.useState(INIT_KEY_SET)
 
     const renderContent = () => {
         if (initing) return <Loader />;
@@ -30,8 +35,10 @@ export const WalletProvider = ({ children }) => {
             setIsCreate(true)
         } else {
             const address = new ethers.Wallet(storagePrvKey).address;
-            setPrivateKey(storagePrvKey);
-            setAddress(address);
+            setKeySet({
+                prvKey: storagePrvKey,
+                address
+            })
             console.log("LOGGER---- USER INFO: ", {
                 address
             })
@@ -42,10 +49,9 @@ export const WalletProvider = ({ children }) => {
 
     const contextValues = React.useMemo(() => {
         return {
-            privateKey,
-            address
+            keySet
         };
-    }, [privateKey, address]);
+    }, [keySet]);
 
     React.useEffect(onPreLoader, [])
 

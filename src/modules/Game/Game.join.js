@@ -1,6 +1,33 @@
 import { AnimatePresence, motion } from "framer-motion";
+import React from 'react';
+import useContractSigner from "../../hooks/useContractSigner";
+import useGetGames from "../../hooks/useGetGames";
+import Spinner from "../../components/Spinner/Spinner";
 
-const JoinGame = ({ show, onJoinGame }) => {
+const JoinGame = ({ show, onCancel, onSuccess }) => {
+    const [gameID, setGameID] = React.useState(undefined);
+    const [loading, setLoading] = React.useState(false);
+
+    const contractSigner = useContractSigner()
+    const { onWaitingGames } = useGetGames()
+
+    const onJoinGame = async () => {
+        try {
+            setLoading(true)
+            const tx = await contractSigner.joinGame(gameID);
+            await tx.wait();
+            const games = await onWaitingGames(gameID)
+            onSuccess({
+                games,
+                gameID
+            })
+        } catch (error) {
+            console.log('LOGGER--- JOIN GAME ERROR: ', error)
+            alert(error?.message || "JOIN GAME ERROR")
+        } finally {
+            setLoading(false)
+        }
+    }
 
     return (
         <AnimatePresence>
@@ -43,16 +70,22 @@ const JoinGame = ({ show, onJoinGame }) => {
                                 },
                             }}
                             autoFocus={true}
+                            onChange={(event) => {
+                                setGameID(event?.target.value)
+                            }}
                         >
                         </motion.input>
+                        {loading && (<Spinner/>)}
                         <motion.div
                             initial={{ scale: 0 }}
                             animate={{
                                 scale: 1,
                                 transition: { delay: 1.5, duration: 0.3 },
                             }}
+                            style={{ display: 'flex' }}
                         >
-                            <button className="button" onClick={() => onJoinGame('123')}>Join</button>
+                            <button className="button" onClick={() => onCancel()}>Cancel</button>
+                            <button className="button" onClick={onJoinGame}>Join</button>
                         </motion.div>
                     </motion.div>
                 </motion.div>

@@ -7,17 +7,24 @@ import GameEnd from "./Game.end";
 import JoinGame from "./Game.join";
 import './styles.scss'
 import Spinner from "../../components/Spinner/Spinner";
+import CreateGame from "./Game.create";
+import {WalletContext} from "../../contexts/wallet.context";
 
 function Game() {
+    const { balance } = useContext(AssetsContext);
+    const { keySet } = useContext(WalletContext);
     const [squares, setSquares] = useState(Array(9).fill(""));
     const [turn, setTurn] = useState("x");
     const [winner, setWinner] = useState(null);
-    const { balance } = useContext(AssetsContext);
-
-
-    console.log('SANG TEST: ', squares)
+    const [loading, setLoading] = React.useState(false)
 
     const [showJoin, setShowJoin] = React.useState(false)
+    const [showCreate, setShowCreate] = React.useState(false)
+    // TODO: REMOVE LATER
+    const [gameInfo, setGameInfo] = React.useState({
+        myRole: undefined,
+        gameID: undefined
+    })
 
     const checkEndTheGame = () => {
         for (let square of squares) {
@@ -52,6 +59,7 @@ function Game() {
     };
 
     const updateSquares = (ind) => {
+        if (turn !== gameInfo.myRole) return;
         if (squares[ind] || winner) {
             return;
         }
@@ -73,6 +81,15 @@ function Game() {
         setWinner(null);
     };
 
+    const handleJoinGame = ({ games, gameID }) => {
+        const isPlayer1 = keySet.address.toLowerCase() === games.player1.toLowerCase();
+        setGameInfo({
+            myRole: isPlayer1 ? 'x' : 'o'
+        })
+        setShowJoin(false);
+        setShowCreate(false)
+    }
+
     if (!balance?.isLoaded) {
         return <Loader />
     }
@@ -81,9 +98,13 @@ function Game() {
         <div className="tic-tac-toe game-container">
             <GameHeader />
             <h1> TIC TAC TOE </h1>
-            {balance?.isLoaded && (
+            {balance?.isLoaded && !gameInfo.gameID && (
                 <>
-                    <button>
+                    <button
+                        onClick={() => {
+                            setShowCreate(true)
+                        }}
+                    >
                         New Game
                     </button>
                     <button onClick={() => setShowJoin(true)}>
@@ -93,9 +114,11 @@ function Game() {
             )}
 
             <>
-                <div className="wrap-loader">
-                    <Spinner />
-                </div>
+                {loading && (
+                    <div className="wrap-loader">
+                        <Spinner />
+                    </div>
+                )}
                 <div className="game">
                     {Array.from("012345678").map((ind) => (
                         <Square
@@ -111,7 +134,24 @@ function Game() {
                     <Square clsName="o" />
                 </div>
                 <GameEnd resetGame={resetGame} winner={winner} />
-                <JoinGame show={showJoin} onJoinGame={() => {}}/>
+                {!!showCreate && (
+                    <CreateGame
+                        show={showCreate}
+                        onSuccess={handleJoinGame}
+                        onCancel={() => {
+                            setShowCreate(false)
+                        }}
+                    />
+                )}
+                {!!showJoin && (
+                    <JoinGame
+                        show={showJoin}
+                        onSuccess={handleJoinGame}
+                        onCancel={() => {
+                            setShowJoin(false)
+                        }}
+                    />
+                )}
             </>
         </div>
     );
