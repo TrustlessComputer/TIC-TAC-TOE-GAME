@@ -19,13 +19,13 @@ const CreateGame = ({ show, onSuccess, onCancel }) => {
     const onCreateGameID = async () => {
         try {
             setLoading(true);
-            // const tx = await contractSigner.newGame();
-            // await tx.wait();
-            // const hash = Object(tx).hash;
-            // const receipt = await provider.getTransactionReceipt(hash);
+            const tx = await contractSigner.newGame();
+            await tx.wait();
+            const hash = Object(tx).hash;
+            const receipt = await provider.getTransactionReceipt(hash);
 
             // TODO: REMOVE LATER
-            const receipt = await provider.getTransactionReceipt('0xe3abe905a773fc0f695fdc41e06dee36b07fcb37ff517f9ac88ba8efab2f9a4e')
+            // const receipt = await provider.getTransactionReceipt('0xe3abe905a773fc0f695fdc41e06dee36b07fcb37ff517f9ac88ba8efab2f9a4e')
             const logs = receipt.logs;
             const logData = logs[0]
             const abiCoder = ethers.AbiCoder.defaultAbiCoder();

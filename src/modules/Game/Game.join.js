@@ -1,8 +1,9 @@
 import { AnimatePresence, motion } from "framer-motion";
-import React from 'react';
+import React, {useContext} from 'react';
 import useContractSigner from "../../hooks/useContractSigner";
 import useGetGames from "../../hooks/useGetGames";
 import Spinner from "../../components/Spinner/Spinner";
+import {WalletContext} from "../../contexts/wallet.context";
 
 const JoinGame = ({ show, onCancel, onSuccess }) => {
     const [gameID, setGameID] = React.useState(undefined);
@@ -10,17 +11,23 @@ const JoinGame = ({ show, onCancel, onSuccess }) => {
 
     const contractSigner = useContractSigner()
     const { onWaitingGames } = useGetGames()
+    const { keySet } = useContext(WalletContext)
 
     const onJoinGame = async () => {
         try {
             setLoading(true)
             const tx = await contractSigner.joinGame(gameID);
             await tx.wait();
-            const games = await onWaitingGames(gameID)
-            onSuccess({
-                games,
-                gameID
-            })
+            const games = await onWaitingGames(gameID);
+            if (games.player1.toLowerCase() === keySet.address.toLowerCase() || games.player2.toLowerCase() === keySet.address.toLowerCase()) {
+                onSuccess({
+                    games,
+                    gameID
+                })
+            } else {
+                alert('Can not join the game.')
+            }
+
         } catch (error) {
             console.log('LOGGER--- JOIN GAME ERROR: ', error)
             alert(error?.message || "JOIN GAME ERROR")

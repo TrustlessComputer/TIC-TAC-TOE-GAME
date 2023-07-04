@@ -2,7 +2,7 @@ import {AnimatePresence, motion} from "framer-motion";
 import Square from "../../components/Square";
 import ButtonNewGame from "../../components/ButtonNewGame";
 
-const GameEnd = ({ winner, resetGame }) => {
+const GameEnd = ({ winner, resetGame, myRole }) => {
     return (
         <AnimatePresence>
             {winner && (
@@ -31,9 +31,8 @@ const GameEnd = ({ winner, resetGame }) => {
                                 },
                             }}
                         >
-                            {winner === "x | o"
-                                ? "No Winner :/"
-                                : "Win !! :)"}
+                            {winner === "3"
+                                ? "No Winner :/" : winner === myRole ? "Win !! :)" : "Loser !! :("}
                         </motion.h2>
                         <motion.div
                             initial={{ scale: 0 }}
@@ -46,14 +45,14 @@ const GameEnd = ({ winner, resetGame }) => {
                             }}
                             className="win"
                         >
-                            {winner === "x | o" ? (
+                            {winner === "3" ? (
                                 <>
                                     <Square clsName="x" />
                                     <Square clsName="o" />
                                 </>
                             ) : (
                                 <>
-                                    <Square clsName={winner} />
+                                    <Square clsName={myRole === '2' ? "o" : "x"} />
                                 </>
                             )}
                         </motion.div>

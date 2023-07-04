@@ -7,8 +7,8 @@ const TC_LAYER2 = {
 
 const CONTRACT_ADDRESS = '0x7Ec889fa161d5FE6102A8D8Caf6e25d7f0eeBD0d';
 
-const SLEEP_TIME = 3000;
-const COUNTER_TIME = 100;
+const SLEEP_TIME = 1000;
+const COUNTER_TIME = 500;
 
 export {
     TC_LAYER2,
