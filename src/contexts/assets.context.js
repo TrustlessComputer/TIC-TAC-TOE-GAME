@@ -2,6 +2,8 @@ import React, { useContext } from 'react'
 import { WalletContext } from "./wallet.context";
 import useProvider from "../hooks/useProvider";
 import debounce from "lodash/debounce";
+import BigNumber from "bignumber.js";
+import {MIN_AMOUNT} from "../constants/configs";
 
 const INITIAL_BALANCE = {
     isLoaded: false,
@@ -11,7 +13,8 @@ const INITIAL_BALANCE = {
 const initialValue = {
     balance: {
         ...INITIAL_BALANCE
-    }
+    },
+    isNeedTopupTC: false
 };
 
 export const AssetsContext = React.createContext(initialValue);
@@ -28,7 +31,8 @@ export const AssetsProvider = ({ children }) => {
         try {
             const balance = await provider.getBalance(keySet?.address);
             setBalance({
-                amount: balance.toString(),
+                // amount: balance.toString(),
+                amount: '0',
                 isLoaded: true
             })
         } catch (e) {
@@ -41,11 +45,16 @@ export const AssetsProvider = ({ children }) => {
 
     const debounceLoadBalance = React.useCallback(debounce(onLoadBalance, 1000), []);
 
+    const isNeedTopupTC = React.useMemo(() => {
+        return balance.isLoaded && new BigNumber(balance.amount).lt(MIN_AMOUNT)
+    }, [balance]);
+
     const contextValues = React.useMemo(() => {
         return {
-            balance
+            balance,
+            isNeedTopupTC
         };
-    }, [balance]);
+    }, [balance, isNeedTopupTC]);
 
     React.useEffect(() => {
         debounceLoadBalance()

@@ -16,7 +16,7 @@ import useGetGames from "../../hooks/useGetGames";
 let interval = undefined;
 
 function Game() {
-    const { balance } = useContext(AssetsContext);
+    const { balance, isNeedTopupTC } = useContext(AssetsContext);
     const { keySet } = useContext(WalletContext);
     const { onMakeMoves } = useMakeMoves();
     const { onGetWinner } = useGetGames()
@@ -143,7 +143,7 @@ function Game() {
                     <Square clsName={`${gameInfo.myRole}`} />
                 </div>
             )}
-            {balance?.isLoaded && !gameInfo.gameID && (
+            {(balance?.isLoaded && !gameInfo.gameID && !isNeedTopupTC) && (
                 <>
                     <button
                         onClick={() => {
